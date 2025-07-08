@@ -1,0 +1,13 @@
+@font-face {
+    font-family:Inter ;
+    src: url('./assets/font/Inter/Inter-VariableFont_opsz\,wght.ttf');
+}
+*{
+    font-family: Inter;
+}
+.main{
+    background-image: url("/images/conf.jpeg");
+    background-color: no-repeat;
+    background-size: cover;
+    background-position: bottom;
+}

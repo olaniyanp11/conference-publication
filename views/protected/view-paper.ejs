@@ -1,0 +1,48 @@
+<%- include('../partials/header') %>
+
+<div class="min-h-screen bg-gray-100 px-6 py-12">
+  <div class="max-w-4xl mx-auto bg-white p-6 rounded shadow">
+    <h2 class="text-2xl font-bold text-[#230052] mb-4"><%= paper.title %></h2>
+    <p class="text-sm text-gray-600 mb-6">
+      <strong>Author:</strong> <%= paper.authorName %> |
+      <strong>Year:</strong> <%= paper.year %> |
+      <strong>Status:</strong> 
+      <% if (paper.status === 'approved') { %>
+        <span class="text-green-600">Approved</span>
+      <% } else if (paper.status === 'pending') { %>
+        <span class="text-yellow-600">Pending</span>
+      <% } else { %>
+        <span class="text-red-600">Rejected</span>
+      <% } %>
+    </p>
+
+    <% if (paper.fileUrl.endsWith('.pdf')) { %>
+      <!-- Show PDF -->
+      <iframe 
+        src="<%= paper.fileUrl %>" 
+        width="100%" 
+        height="700px" 
+        class="rounded border shadow">
+      </iframe>
+
+    <% } else if (paper.fileUrl.endsWith('.docx')) { %>
+      <!-- Local note for Word -->
+      <div class="text-gray-700">
+        <p class="mb-4">Preview for Word files isn't available locally. Please download to view:</p>
+        <a href="<%= paper.fileUrl %>" class="text-blue-600 underline">Download .docx File</a>
+      </div>
+
+    <% } else { %>
+      <p class="text-red-600">Unsupported file type.</p>
+    <% } %>
+
+    <div class="mt-6 flex gap-4">
+      <a href="<%= paper.fileUrl %>" download class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+        Download
+      </a>
+      <a href="/my-submissions" class="text-[#e000a1] underline">Back</a>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

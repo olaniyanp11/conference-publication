@@ -1,0 +1,103 @@
+<%- include('./partials/header') %>
+<section class="min-h-screen main relative">
+    <div class="relative w-full h-screen flex justify-center items-start  flex-col ">
+        <img src="/images/heo.jpeg" class="absolute w-full top-0 h-full z-10 opacity-80 ">
+        <h2 class="text-white font-bold text-4xl sm:text-[55px] z-20 w-full sm:w-[70%] leading-10 sm:leading-14 pl-10">Welcome to ConfHub - Your Conference Publication Repository</h2>
+    <p class="text-md pt-4 w-full sm:w-[60%] text-white z-20 pl-10">Whether you're a researcher, presenter, or student, our system provides a centralized repository for storing and retrieving scholarly papers.</p>
+    <h2 class="text-white pl-10 z-20 font-bold pt-2 text-md ">📚 Open Access | 🔍 Searchable | 🔐 Secure Uploads | ✅ Admin Moderation</h2>
+    </div>
+    <div class="flex justify-center ">
+     <div class="absolute bottom-0 bg-white z-30 mx-auto w-[90%] sm:w-[70%] text-center py-5 rounded-xl mb-[-100px] sm:mb-[-35px] flex justify-around shadow-sm shadow-[#24005257]">
+        <span class="pl-7 py-4"> <i class="fa fa-home pr-2"></i> Explore Papers</span>
+        <span class=" pl-7 py-4"><i class="fa fa-book pr-2"></i>Submit Your Paper</span>
+        <span class=" pl-7 py-4"><i class="fa fa-search pr-2"></i> Learn More</span>
+     </div>
+    </div>
+</section>
+<section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 p-8 bg-white py-40">
+  <!-- Upload Papers -->
+  <div class="text-center rounded-lg text-white p-6  shadow hover:shadow-md transition bg-[#230052] ">
+    <div class="text-4xl  mb-4">
+      <i class="fas fa-upload"></i>
+    </div>
+    <h3 class="text-xl font-semibold mb-2">Upload Conference Papers</h3>
+    <p class="text-gray-300 text-sm">
+      Authors can securely upload and share their research papers in PDF format with complete metadata.
+    </p>
+  </div>
+
+  <!-- Search Repository -->
+  <div class="text-center rounded-lg text-white p-6  shadow hover:shadow-md transition bg-[#230052] ">
+    <div class="text-4xl  mb-4">
+      <i class="fas fa-search"></i>
+    </div>
+    <h3 class="text-xl font-semibold mb-2">Search & Discover</h3>
+    <p class="text-gray-300 text-sm">
+      Use powerful filters to find papers by author, title, year, or keywords in seconds.
+    </p>
+  </div>
+
+  <!-- Admin Moderation -->
+  <div class="text-center rounded-lg text-white p-6  shadow hover:shadow-md transition bg-[#230052] ">
+    <div class="text-4xl  mb-4">
+      <i class="fas fa-user-shield"></i>
+    </div>
+    <h3 class="text-xl font-semibold mb-2">Admin Review & Control</h3>
+    <p class="text-gray-300 text-sm">
+      Admins can approve submissions, manage users, and maintain the quality of content in the repository.
+    </p>
+  </div>
+</section>
+<section class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center px-6 py-12 bg-gray-100">
+  <!-- Image -->
+  <div class="w-full h-full">
+    <img src="/images/woman.jpg" alt="Conference Archive" class="rounded-xl shadow-md w-full object-cover" />
+  </div>
+
+  <!-- Text Content -->
+  <div>
+    <h2 class="text-3xl font-bold text-[#230052] mb-4">Preserve and Access Conference Knowledge</h2>
+    <p class="text-gray-700 mb-4">
+      Our platform allows researchers to upload and access academic papers from conferences with ease. With keyword tagging and search functionality, you can find the knowledge you need—when you need it.
+    </p>
+    <ul class="list-disc pl-5 text-sm text-gray-600 space-y-2">
+      <li>Upload PDFs securely with metadata</li>
+      <li>Search by author, title, or keywords</li>
+      <li>View and download approved conference materials</li>
+    </ul>
+    <a href="/about" class="inline-block mt-6 bg-[#230052] text-white px-6 py-2 rounded-full hover:bg-green-700 transition">
+      Learn More
+    </a>
+  </div>
+</section>
+<section class="bg-gray-50 text-[#230052] py-20 px-6">
+  <div class="max-w-6xl mx-auto text-center">
+    <h2 class="text-3xl font-bold mb-6">Why Institutions Trust Us</h2>
+    <p class="text-gray-600 max-w-2xl mx-auto mb-12">
+      Our platform is designed to preserve academic excellence and make research accessible long after conferences end. Trusted by researchers, universities, and academic bodies alike.
+    </p>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+      <div class="bg-[#230052] text-white p-6 rounded-lg shadow hover:shadow-md transition">
+        <div class="text-4xl mb-2"><i class="fas fa-book"></i></div>
+        <h4 class="text-lg font-semibold mb-1">500+ Papers Archived</h4>
+        <p class="text-sm text-gray-300">Across multiple disciplines and institutions.</p>
+      </div>
+
+      <div class="bg-[#230052] text-white p-6 rounded-lg shadow hover:shadow-md transition">
+        <div class="text-4xl mb-2"><i class="fas fa-users"></i></div>
+        <h4 class="text-lg font-semibold mb-1">200+ Registered Authors</h4>
+        <p class="text-sm text-gray-300">Sharing research globally and openly.</p>
+      </div>
+
+      <div class="bg-[#230052] text-white p-6 rounded-lg shadow hover:shadow-md transition">
+        <div class="text-4xl mb-2"><i class="fas fa-university"></i></div>
+        <h4 class="text-lg font-semibold mb-1">15 Partner Institutions</h4>
+        <p class="text-sm text-gray-300">Supporting digital scholarship and open access.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<%- include('./partials/footer') %>
