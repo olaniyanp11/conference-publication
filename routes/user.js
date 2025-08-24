@@ -1,42 +1,60 @@
-const express = require("express")
-const router =express.Router();
-const Paper = require('../models/Paper')
-const upload = require("../middlewares/config")
+const express = require("express");
+const router = express.Router();
+const Paper = require('../models/Paper');
+const upload = require("../middlewares/config"); // multer config
+const fs = require('fs');
+const path = require('path');
 
-router.get('/submit-paper',  (req, res) => {
+// Render submit form
+router.get('/submit-paper', (req, res) => {
   res.render('protected/submit-paper', { title: 'Submit Paper', user: req.user });
 });
 
-// POST form
-router.post('/submit-paper',  upload.single('pdf'), async (req, res) => {
-  try {
-    const { title, abstract, authorName, keywords, year } = req.body;
-    const fileUrl = `/uploads/${req.file.filename}`;
+router.post(
+  '/submit-paper',
+  upload.fields([
+    { name: 'pdf', maxCount: 1 },
+    { name: 'cover', maxCount: 1 }
+  ]),
+  async (req, res) => {
+    try {
+      const { title, abstract, authorName, keywords, year } = req.body;
 
-    const paper = new Paper({
-      title,
-      abstract,
-      authorName,
-      keywords: keywords.split(',').map(k => k.trim()),
-      year,
-      fileUrl,
-      uploadedBy: req.user._id
-    });
+      // ✅ required paper file
+      const fileUrl = `/uploads/${req.files['pdf'][0].filename}`;
 
-    await paper.save();
-    req.flash('success', 'Paper submitted successfully!');
-    res.redirect('/my-submissions');
-  } catch (error) {
-    console.error(error);
-    req.flash('error', 'Something went wrong.');
-    res.redirect('/user/submit-paper');
+      // ✅ optional cover file
+      let coverUrl = '/uploads/covers/default-cover.png';
+      if (req.files['cover']) {
+        coverUrl = `/uploads/covers/${req.files['cover'][0].filename}`;
+      }
+
+      const paper = new Paper({
+        title,
+        abstract,
+        authorName,
+        keywords: keywords.split(',').map(k => k.trim()),
+        year,
+        fileUrl,
+        coverUrl,
+        uploadedBy: req.user._id
+      });
+
+      await paper.save();
+      req.flash('success', 'Paper submitted successfully!');
+      res.redirect('/my-submissions');
+    } catch (error) {
+      console.error(error);
+      req.flash('error', 'Something went wrong.');
+      res.redirect('/user/submit-paper');
+    }
   }
-});
+);
 
+// My submissions
 router.get('/my-submissions', async (req, res) => {
   try {
     const papers = await Paper.find({ uploadedBy: req.user._id }).sort({ createdAt: -1 });
-    console.log(papers)
     res.render('protected/my-submissions', {
       title: 'My Submissions',
       papers,
@@ -48,25 +66,28 @@ router.get('/my-submissions', async (req, res) => {
     res.redirect('/');
   }
 });
-router.get('/view/:id',  async (req, res) => {
+
+// View single paper
+router.get('/view/:id', async (req, res) => {
   try {
     const paper = await Paper.findById(req.params.id);
-    console.log(paper)
     if (!paper || paper.uploadedBy.toString() !== req.user._id.toString()) {
       req.flash('error', 'Unauthorized or not found.');
       return res.redirect('/my-submissions');
     }
-  
+
     res.render('protected/view-paper', {
       title: 'View Paper',
       paper,
       user: req.user
     });
   } catch (error) {
-          req.flash('error', 'Error Getting Submssions ');
-      return res.redirect('/my-submissions');
+    req.flash('error', 'Error Getting Submissions');
+    return res.redirect('/my-submissions');
   }
 });
+
+// All approved papers
 router.get('/papers', async (req, res) => {
   try {
     const papers = await Paper.find({ status: 'approved' }).sort({ createdAt: -1 });
@@ -82,6 +103,7 @@ router.get('/papers', async (req, res) => {
   }
 });
 
+// Accepted papers (for logged-in user)
 router.get('/accepted', async (req, res) => {
   try {
     const papers = await Paper.find({
@@ -101,5 +123,6 @@ router.get('/accepted', async (req, res) => {
   }
 });
 
+// ✅ Update paper (replace pdf + optional cover)
 
-module.exports = router
+module.exports = router;

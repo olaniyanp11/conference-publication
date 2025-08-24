@@ -3,6 +3,9 @@ const express = require('express');
 const router = express.Router();
 const Paper = require('../models/Paper');
 const User = require('../models/User');
+const upload = require("../middlewares/config"); // multer config
+const fs = require('fs');
+const path = require('path');
 
 // GET /admin/dashboard
 router.get('/dashboard', async (req, res) => {
@@ -70,5 +73,52 @@ router.post('/reject/:id',  async (req, res) => {
     res.redirect('/admin/dashboard');
   }
 });
+
+
+router.post('/update-paper/:id', upload.fields([
+  { name: 'pdf', maxCount: 1 },
+  { name: 'cover', maxCount: 1 }
+]), async (req, res) => {
+  try {
+    const paper = await Paper.findById(req.params.id);
+    if (!paper) {
+      req.flash('error', 'Paper not found.');
+      return res.redirect('/admin/dashboard');
+    }
+
+    // --- Replace PDF if uploaded
+    if (req.files['pdf']) {
+      // delete old file if exists
+      if (paper.fileUrl) {
+        const oldPdf = path.join(__dirname, '..', paper.fileUrl);
+        if (fs.existsSync(oldPdf)) fs.unlinkSync(oldPdf);
+      }
+      paper.fileUrl = `/uploads/${req.files['pdf'][0].filename}`;
+    }
+
+    // --- Replace Cover if uploaded
+    if (req.files['cover']) {
+      if (paper.coverUrl && paper.coverUrl !== '/uploads/covers/default-cover.png') {
+        const oldCover = path.join(__dirname, '..', paper.coverUrl);
+        if (fs.existsSync(oldCover)) fs.unlinkSync(oldCover);
+      }
+      paper.coverUrl = `/uploads/${req.files['cover'][0].filename}`;
+    }
+
+    // set back to pending (so it can be re-approved after update)
+    paper.status = 'approved';
+    paper.statusUpdatedAt = new Date();
+
+    await paper.save();
+
+    req.flash('success', 'Paper updated successfully and set to pending.');
+    res.redirect('/admin/dashboard');
+  } catch (err) {
+    console.error(err);
+    req.flash('error', 'Failed to update paper.');
+    res.redirect('/admin/dashboard');
+  }
+});
+
 
 module.exports = router

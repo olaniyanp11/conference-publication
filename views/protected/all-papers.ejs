@@ -23,6 +23,8 @@
       <% } else { %>
         <% papers.forEach(paper => { %>
           <div class="bg-white p-4 rounded shadow">
+            <!-- cover image  -->
+            <img src="<%= paper.coverUrl %>" alt="Cover Image" class="w-full h-48 object-cover mb-4 rounded" />
             <h3 class="text-xl font-semibold text-[#230052]"><%= paper.title %></h3>
             <p class="text-sm text-gray-600 mb-1">By <%= paper.authorName %> | <%= paper.year %></p>
             <p class="text-sm text-gray-500 mb-2">Keywords: <%= paper.keywords.join(', ') %></p>

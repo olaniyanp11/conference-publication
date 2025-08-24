@@ -1,13 +1,16 @@
-// models/Paper.js
 const mongoose = require('mongoose');
 
 const paperSchema = new mongoose.Schema({
-  title: String,
-  abstract: String,
-  authorName: String,
-  keywords: [String],
-  year: Number,
-  fileUrl: String,
+  title: { type: String, required: true, trim: true },
+  abstract: { type: String, required: true },
+  authors: [{ type: String, required: true }],
+  keywords: [{ type: String, index: true }],
+  year: { type: Number, required: true },
+  fileUrl: { type: String, required: true },
+  coverUrl: {
+    type: String,
+    default: '/uploads/covers/default-cover.png' // 👈 default image path
+  },
   status: {
     type: String,
     enum: ['pending', 'approved', 'rejected'],
@@ -15,12 +18,10 @@ const paperSchema = new mongoose.Schema({
   },
   uploadedBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    required: true
   },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  }
-});
+  statusUpdatedAt: { type: Date }
+}, { timestamps: true });
 
 module.exports = mongoose.model('Paper', paperSchema);

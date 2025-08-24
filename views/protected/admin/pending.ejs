@@ -51,7 +51,12 @@
                 <form action="/admin/reject/<%= p._id %>" method="POST" class="inline ml-4">
                 <button class="text-red-600 underline">Reject</button>
                 </form>
-
+  <button 
+    class="text-yellow-600 underline ml-4"
+    onclick="openUpdateModal('<%= p._id %>')"
+  >
+    Review
+  </button>
             </div>
           </li>
         <% }) %>
@@ -60,4 +65,39 @@
   </div>
 </div>
 </div>
+<!-- Update Modal -->
+<div id="updateModal" 
+  class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white rounded-lg shadow-lg w-full max-w-lg p-6 flex flex-col">
+    <h2 class="text-xl font-bold mb-4">Update Paper</h2>
+    <form id="updateForm" method="POST" enctype="multipart/form-data">
+      <label class="block mb-2">Replace PDF (optional)</label>
+      <input type="file" name="pdf" class="mb-4 w-full border p-2 rounded">
+
+      <label class="block mb-2">Replace Cover (optional)</label>
+      <input type="file" name="cover" class="mb-4 w-full border p-2 rounded">
+
+      <div class="flex justify-end space-x-4">
+        <button type="button" onclick="closeUpdateModal()" class="px-4 py-2 bg-gray-300 rounded">Cancel</button>
+        <button type="submit" class="px-4 py-2 bg-yellow-600 text-white rounded">Update</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<script>
+  function openUpdateModal(paperId) {
+    const form = document.getElementById('updateForm');
+    form.action = `/admin/update-paper/${paperId}`;
+    const modal = document.getElementById('updateModal');
+    modal.style.display = 'flex';
+  }
+
+  function closeUpdateModal() {
+    const modal = document.getElementById('updateModal');
+    modal.style.display = 'none';
+  }
+</script>
+
 <%- include('../../partials/footer') %>

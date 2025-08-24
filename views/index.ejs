@@ -70,6 +70,35 @@
     </a>
   </div>
 </section>
+<section class="bg-white py-16 px-6">
+  <div class="max-w-6xl mx-auto">
+    <h2 class="text-3xl font-bold text-[#230052] mb-6">Latest Publications</h2>
+
+    <% if (papers.length === 0) { %>
+      <p class="text-gray-600">No publications available yet.</p>
+    <% } else { %>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <% papers.forEach(p => { %>
+          <div class="bg-gray-50 rounded-lg shadow p-4">
+            <% if (p.coverUrl) { %>
+              <img src="<%= p.coverUrl %>" alt="Cover" class="h-40 w-full object-cover rounded-md mb-3">
+            <% } else { %>
+              <img src="/images/default-cover.jpg" alt="Default Cover" class="h-40 w-full object-cover rounded-md mb-3">
+            <% } %>
+            <h3 class="text-lg font-semibold text-[#230052]"><%= p.title %></h3>
+            <p class="text-sm text-gray-600">By <%= p.authorName %> (<%= p.year %>)</p>
+            <div class="mt-2 flex space-x-3">
+              <a href="/view/<%= p._id %>" class="text-[#e000a1] underline">View</a>
+              <a href="<%= p.fileUrl %>" target="_blank" class="text-blue-600 underline">PDF</a>
+              <a href="<%= p.fileUrl %>" download class="text-green-600 underline">Download</a>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</section>
+
 <section class="bg-gray-50 text-[#230052] py-20 px-6">
   <div class="max-w-6xl mx-auto text-center">
     <h2 class="text-3xl font-bold mb-6">Why Institutions Trust Us</h2>

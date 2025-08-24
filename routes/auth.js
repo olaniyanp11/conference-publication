@@ -9,8 +9,29 @@ const getUser = require('../middlewares/getUser');
 const Paper = require('../models/Paper');
 
 // Pages
-router.get('/',getUser, (req, res) => {
-    res.render('index', { title: 'Home', user:req.user });
+router.get('/', getUser, async (req, res) => {
+  try {
+    const currentYear = new Date().getFullYear();
+
+    // Get all approved papers for current year
+    let papers = await Paper.find({ status: 'approved', year: currentYear })
+      .sort({ createdAt: -1 });
+
+    // If no papers this year, fallback to all approved (sorted by latest uploads)
+    if (papers.length === 0) {
+      papers = await Paper.find({ status: 'approved' })
+        .sort({ createdAt: -1 });
+    }
+
+    res.render('index', { 
+      title: 'Home', 
+      user: req.user, 
+      papers 
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
 });
 
 router.get('/register',getUser, (req, res) => {
