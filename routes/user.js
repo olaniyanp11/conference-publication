@@ -42,7 +42,7 @@ router.post(
 
       await paper.save();
       req.flash('success', 'Paper submitted successfully!');
-      res.redirect('/my-submissions');
+      res.redirect('/user/my-submissions');
     } catch (error) {
       console.error(error);
       req.flash('error', 'Something went wrong.');
@@ -73,7 +73,7 @@ router.get('/view/:id', async (req, res) => {
     const paper = await Paper.findById(req.params.id);
     if (!paper || paper.uploadedBy.toString() !== req.user._id.toString()) {
       req.flash('error', 'Unauthorized or not found.');
-      return res.redirect('/my-submissions');
+      return res.redirect('/user/my-submissions');
     }
 
     res.render('protected/view-paper', {
@@ -83,7 +83,7 @@ router.get('/view/:id', async (req, res) => {
     });
   } catch (error) {
     req.flash('error', 'Error Getting Submissions');
-    return res.redirect('/my-submissions');
+    return res.redirect('/user/my-submissions');
   }
 });
 

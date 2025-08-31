@@ -6,6 +6,7 @@ const User = require('../models/User');
 const upload = require("../middlewares/config"); // multer config
 const fs = require('fs');
 const path = require('path');
+const jwt = require('jsonwebtoken')
 
 // GET /admin/dashboard
 router.get('/dashboard', async (req, res) => {
@@ -106,7 +107,6 @@ router.post('/update-paper/:id', upload.fields([
     }
 
     // set back to pending (so it can be re-approved after update)
-    paper.status = 'approved';
     paper.statusUpdatedAt = new Date();
 
     await paper.save();
@@ -118,7 +118,73 @@ router.post('/update-paper/:id', upload.fields([
     req.flash('error', 'Failed to update paper.');
     res.redirect('/admin/dashboard');
   }
+});// GET /papers/all/:year?  → show all papers per year (any status)
+
+router.get('/papers/all', async (req, res) => {
+  try {
+    let year = new Date().getFullYear();
+    const query = {};
+
+    if (req.query.q) {
+      const q = req.query.q.trim();
+
+      // If query looks like a 4-digit year, treat it as year
+      if (/^\d{4}$/.test(q)) {
+        year = q;
+        query.year = year;
+      } else {
+        // Otherwise, search across title, author, and keywords
+        const regex = new RegExp(q, 'i'); // case-insensitive
+        query.$or = [
+          { title: regex },
+          { authorName: regex },
+          { keywords: regex }
+        ];
+      }
+    } else {
+      // Default: filter by current year
+      query.year = year;
+    }
+
+    const papers = await Paper.find(query).sort({ createdAt: -1 });
+
+    res.render('protected/admin/all-papers', {
+      title: `All Papers${req.query.q ? ` - ${req.query.q}` : ` - ${year}`}`,
+      papers,
+      user: req.user,
+      year,
+      q: req.query.q || ''
+    });
+  } catch (error) {
+    console.error(error);
+    req.flash('error', 'Failed to load papers.');
+    res.redirect('/');
+  }
 });
 
+// Approve all papers for a specific year
+router.post('/papers/approve-all/:year', async (req, res) => {
+  try {
+    let year = req.params.year;
+
+    // validate year (must be 4 digits)
+    if (!/^\d{4}$/.test(year)) {
+      req.flash('error', 'Invalid year provided.');
+      return res.redirect('/admin/papers/all');
+    }
+
+    const result = await Paper.updateMany(
+      { year, status: { $ne: 'approved' } }, // only update non-approved
+      { $set: { status: 'approved' } }
+    );
+
+    req.flash('success', `Approved ${result.modifiedCount} papers for ${year}.`);
+    res.redirect(`/admin/papers/all/${year}`);
+  } catch (error) {
+    console.error(error);
+    req.flash('error', 'Failed to approve papers.');
+    res.redirect('/admin/papers/all');
+  }
+});
 
 module.exports = router

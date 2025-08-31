@@ -1,0 +1,57 @@
+<%- include('../../partials/header') %>
+
+<section class="min-h-screen bg-gray-100 px-6 py-12">
+  <div class="max-w-6xl mx-auto">
+    <h2 class="text-3xl font-bold text-[#230052] mb-6 text-center">
+      <%= title %>
+    </h2>
+
+    <!-- Search form -->
+<form method="GET" action="/admin/papers/all" class="mb-6 flex flex-col sm:flex-row gap-4">
+  <input 
+    type="text" 
+    name="q" 
+    value="<%= typeof q !== 'undefined' ? q : '' %>"
+    placeholder="Search by title, author, year, or keyword..."
+    class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#230052]" />
+  <button class="px-6 py-2 bg-[#230052] text-white rounded hover:bg-[#3b006b]">
+    Search
+  </button>
+</form>
+<!-- Approve All button -->
+<% if (papers.length > 0) { %>
+  <form method="POST" action="/admin/papers/approve-all/<%= year %>" class="mb-6 text-right">
+    <button 
+      type="submit" 
+      class="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+      onclick="return confirm('Are you sure you want to approve all papers for <%= year %>?')"
+    >
+      Approve All Papers (<%= year %>)
+    </button>
+  </form>
+<% } %>
+
+    <!-- Paper list -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <% if (papers.length === 0) { %>
+        <p>No papers found for <%= year %>.</p>
+      <% } else { %>
+        <% papers.forEach(paper => { %>
+          <div class="bg-white p-4 rounded shadow">
+            <img src="<%= paper.coverUrl %>" alt="Cover Image" class="w-full h-48 object-cover mb-4 rounded" />
+            <h3 class="text-xl font-semibold text-[#230052]"><%= paper.title %></h3>
+            <p class="text-sm text-gray-600 mb-1">By <%= paper.authorName %> | <%= paper.year %></p>
+            <p class="text-sm text-gray-500 mb-2">Keywords: <%= paper.keywords.join(', ') %></p>
+            <div class="flex gap-4">
+              <a href="/view/<%= paper._id %>" class="text-[#e000a1] underline">View</a>
+              <a href="<%= paper.fileUrl %>" target="_blank" class="text-blue-600 underline">Open PDF</a>
+              <a href="<%= paper.fileUrl %>" download class="text-green-600 underline">Download</a>
+            </div>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+  </div>
+</section>
+
+<%- include('../../partials/footer') %>
